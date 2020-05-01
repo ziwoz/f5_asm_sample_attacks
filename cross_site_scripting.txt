@@ -1,0 +1,3 @@
+<script>alert("your system is infected! call Iwoz for help")</script>
+
+<iframe src="http://www.hackthissite.org" width="600" height="500"></iframe>
