@@ -1,1 +1,0 @@
-# https://realpython.com/headless-selenium-testing-with-python-and-phantomjs/
