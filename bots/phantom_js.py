@@ -48,5 +48,5 @@ def login_bot_thread(n_request, max_thread, url, username, password):
     
 url = url_backend
 url = url_asm
-login_bot_no_thread(n_request=10, url=url, username=username, password=password)
-# login_bot_thread(n_request=10, max_thread=4, url=url, username=username, password=password)
+# login_bot_no_thread(n_request=10, url=url, username=username, password=password)
+login_bot_thread(n_request=10, max_thread=4, url=url, username=username, password=password)

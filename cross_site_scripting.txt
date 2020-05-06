@@ -1,3 +1,8 @@
+";!--"<BOBUSER>=&{()}
+
 <script>alert("your system is infected! call Iwoz for help")</script>
 
-<iframe src="http://www.hackthissite.org" width="600" height="500"></iframe>
+<script>window.location="https://www.hackthissite.org/pages/index/index.php"</script>
+
+<iframe src="https://www.pandasecurity.com/mediacenter/src/uploads/2019/07/pandasecurity-How-do-hackers-pick-their-targets.jpg" width="500" height="500"></iframe>
+
