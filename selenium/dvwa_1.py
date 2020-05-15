@@ -71,20 +71,22 @@ class DVWA(object):
                 self.login()
 
     @staticmethod
-    def connect_check_close(url, username, password, headless):
+    def connect_check_close(url, username, password, headless, attack=True):
         session = DVWA(url, username, password, headless)
         session.login()
         session.reset_settings()
         session.explore_instructions()
         session.click_all_side_bar()
         session.login()
-        session.cross_site_script()
-        session.sql_injection()
-        session.command_injection()
-        session.forceful_browsing()
+        session.cross_site_script(attack)
+        session.sql_injection(attack)
+        session.command_injection(attack)
+        session.cross_site_script_stored(attack)
+        if attack:
+            session.forceful_browsing()
         session.browser.close()
 
-    def cross_site_script(self):
+    def cross_site_script(self, attack=True):
         url = self.url + '/vulnerabilities/xss_r/'
         s1 = '";!--"<BOBUSER>=&{()}'
         s2 = '<script>alert("your system is infected! call Iwoz for help")</script>'
@@ -92,7 +94,8 @@ class DVWA(object):
         s4 = '<iframe src="https://www.pandasecurity.com/mediacenter/src/uploads/2019/07/pandasecurity-How-do-hackers-pick-their-targets.jpg" width="500" height="500"></iframe>'
         attack_list = [s1, s2, s3, s4]
         values = [ DVWA.random_string( random.randint(1,100) ) for x in range(5) ]
-        values += attack_list
+        if attack:
+            values += attack_list
         for s in values:
             try:
                 self.browser.get(url)
@@ -106,7 +109,31 @@ class DVWA(object):
                 self.browser.find_element_by_name('XSS').submit()
                 sleep(self.delay)
 
-    def sql_injection(self):
+    def cross_site_script_stored(self, attack=True):
+        url = self.url + '/vulnerabilities/xss_s/'
+
+        n_entry = 10
+
+        messages = [ DVWA.random_string( random.randint(1,100) ) for x in range(n_entry) ]
+        names = [ DVWA.random_string( random.randint(3,5) ) for x in range(n_entry) ]
+        # if attack:
+        #     values += attack_list
+        for message, name in zip(messages, names):
+            try:
+                self.browser.get(url)
+                self.browser.find_element_by_name('txtName').send_keys(name)
+                self.browser.find_element_by_name('mtxMessage').send_keys(message)
+                self.browser.find_element_by_name('btnSign').click()
+                sleep(self.delay)
+            except UnexpectedAlertPresentException:
+                self.login()
+                self.browser.get(url)
+                self.browser.find_element_by_name('txtName').send_keys(name)
+                self.browser.find_element_by_name('mtxMessage').send_keys(message)
+                self.browser.find_element_by_name('btnSign').click()
+                sleep(self.delay)
+
+    def sql_injection(self, attack=True):
         url = self.url + '/vulnerabilities/sqli/'
         values = [ str(x) for x in range(1, 10) ]
         s1 = "%' or 1='1"
@@ -114,14 +141,15 @@ class DVWA(object):
         s3 = "$username = 1' or '1' = '1"
         s4 = "' and 1=0 union select null, concat (first_name,0x0a,last_name,0x0a,user,0x0a,password) from users #"
         attack_list = [ s1, s2, s3, s4 ]
-        values += attack_list
+        if attack:
+            values += attack_list
         for i in values:
             self.browser.get(url)
             self.browser.find_element_by_name('id').send_keys(i)
             self.browser.find_element_by_name('Submit').click()
             sleep(self.delay)
 
-    def command_injection(self):
+    def command_injection(self, attack=True):
         url = self.url + '/vulnerabilities/exec/#'
         values = ['8.8.8.8', '9.9.9.9', '5.5.5.5', '4.4.4.4']
         s1 = '1 | ls /etc'
@@ -129,7 +157,8 @@ class DVWA(object):
         s3 = '1 | ip addr'
         s4 = '1 | reboot'
         attack_list = [ s1, s2, s3, s4 ]
-        values += attack_list
+        if attack:
+            values += attack_list
         for i in values:
             try:
                 self.browser.get(url)
@@ -156,11 +185,11 @@ class DVWA(object):
 
 
 
-def login_bot_thread(n_request, max_thread, url, username, password, headless):
+def login_bot_thread(n_request, max_thread, url, username, password, headless, attack=True):
     threads = []
     for i in range(n_request):
         print(i)
-        th = threading.Thread(target=DVWA.connect_check_close, args=(url, username, password, headless))
+        th = threading.Thread(target=DVWA.connect_check_close, args=(url, username, password, headless, attack))
         threads.append(th)
         th.start()
         while threading.active_count() > max_thread:
@@ -169,7 +198,8 @@ def login_bot_thread(n_request, max_thread, url, username, password, headless):
         th.join()
 
 
-login_bot_thread(1, 1, 'http://172.16.224.102', 'admin', 'password', headless=False, delay=.1)
+# login_bot_thread(1, 1, 'http://172.16.224.102', 'admin', 'password', headless=False, attack=True)
+login_bot_thread(2, 1, 'http://172.16.224.102', 'admin', 'password', headless=False, attack=False)
 
 
 
